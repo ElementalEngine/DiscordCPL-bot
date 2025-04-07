@@ -24,7 +24,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (
     !ChannelController.isChannel(
       interaction,
-      config.discord.channels.lobbylinks
+      config.discord.channels.civ7lobbylinks
     )
   )
     return
@@ -47,17 +47,19 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       inline: false,
     })
 
-  interaction.channel?.send({
-    embeds: [
-      {
-        title: `Join ${interaction.user.username}'s Lobby`,
-        description: `Lobby Link: [Steam Lobby](${link})`,
-        color: 0x00ff00,
-        url: link,
-        fields,
-      },
-    ],
-  })
+  if (interaction.channel?.isTextBased() && 'send' in interaction.channel) {
+    interaction.channel.send({
+      embeds: [
+        {
+          title: `Join ${interaction.user.username}'s Lobby`,
+          description: `Lobby Link: [Steam Lobby](${link})`,
+          color: 0x00ff00,
+          url: link,
+          fields,
+        },
+      ],
+    })
+  }
 
   interaction.reply({ content: 'Lobby link sent', ephemeral: true })
   interaction.deleteReply()

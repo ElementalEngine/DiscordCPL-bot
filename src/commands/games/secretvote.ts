@@ -5,7 +5,6 @@ import { VoteController } from '../../controllers'
 import { addOptionalMentions } from '../../utils'
 
 export const data = addOptionalMentions(
-  //  @ts-ignore
   new SlashCommandBuilder()
     .setName('secretvote')
     .setDescription('Initiate a secret vote')
@@ -26,7 +25,7 @@ export const data = addOptionalMentions(
         .setName('params')
         .setDescription('Some vote options here...')
         .setRequired(true)
-    )
+    ) as SlashCommandBuilder
 )
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

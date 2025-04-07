@@ -16,7 +16,7 @@ export const data = addOptionalMentions(
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (
-    !ChannelController.isChannel(interaction, config.discord.channels.commands)
+    !ChannelController.isChannel(interaction, config.discord.channels.civ7commands)
   )
     return
   const members = await MentionsController.addOrRemoveMentionedUsers(
@@ -33,26 +33,28 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     shuffled.slice(0, Math.ceil(shuffled.length / 2)),
     shuffled.slice(Math.ceil(shuffled.length / 2), shuffled.length),
   ]
-  interaction.channel?.send({
-    embeds: [
-      {
-        title: 'Team Generator',
-        color: 0x006dff,
-        fields: [
-          {
-            name: 'Team 1',
-            value: teams[0].join('\n'),
-            inline: true,
-          },
-          {
-            name: 'Team 2',
-            value: teams[1].join('\n'),
-            inline: true,
-          },
-        ],
-      },
-    ],
-  })
+  if (interaction.channel?.isTextBased() && 'send' in interaction.channel) {
+    interaction.channel.send({
+      embeds: [
+        {
+          title: 'Team Generator',
+          color: 0x006dff,
+          fields: [
+            {
+              name: 'Team 1',
+              value: teams[0].join('\n'),
+              inline: true,
+            },
+            {
+              name: 'Team 2',
+              value: teams[1].join('\n'),
+              inline: true,
+            },
+          ],
+        },
+      ],
+    })
+  }
   interaction.reply({ content: 'Teams generated', ephemeral: true })
   interaction.deleteReply()
 }

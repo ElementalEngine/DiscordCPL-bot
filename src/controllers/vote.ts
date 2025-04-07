@@ -1,12 +1,9 @@
 import {
-  AwaitReactionsOptions,
   ButtonBuilder,
   ChatInputCommandInteraction,
-  ComponentType,
   ButtonStyle,
   EmbedBuilder,
   ActionRowBuilder,
-  ActionRowData,
   DiscordjsErrorCodes,
 } from 'discord.js'
 
@@ -35,7 +32,7 @@ export const VoteController = {
     if (
       !ChannelController.isChannel(
         interaction,
-        config.discord.channels.lobbylinks
+        config.discord.channels.civ7commands
       )
     )
       return false
@@ -106,18 +103,20 @@ export const VoteController = {
         })
     })
     Promise.all(promises).then(async () => {
-      await interaction.channel?.send({
-        embeds: [
-          {
-            title: `:spy: Secret Vote :spy:`,
-            description: `Question: ${type} ${params} ${EMOJI_QUESTION}${EMOJI_QUESTION}`,
-            fields: [
-              { name: `${EMOJI_YES} Yes`, value: `${votes.yes}`, inline: true },
-              { name: `${EMOJI_NO} No`, value: `${votes.no}`, inline: true },
-            ],
-          },
-        ],
-      })
+      if (interaction.channel?.isTextBased() && 'send' in interaction.channel) {
+        await interaction.channel.send({
+          embeds: [
+            {
+              title: `:spy: Secret Vote :spy:`,
+              description: `Question: ${type} ${params} ${EMOJI_QUESTION}${EMOJI_QUESTION}`,
+              fields: [
+                { name: `${EMOJI_YES} Yes`, value: `${votes.yes}`, inline: true },
+                { name: `${EMOJI_NO} No`, value: `${votes.no}`, inline: true },
+              ],
+            },
+          ],
+        })
+      }
       voteInProgress = false
       main.delete()
     })
