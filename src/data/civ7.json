@@ -1,0 +1,202 @@
+{
+  "leaders": [
+    {
+      "leader": "Abraham_Lincoln",
+      "emoji_ID": "",
+      "Category": "non"
+    },
+    {
+      "leader": "Alexander",
+      "emoji_ID": "",
+      "Category": "non" 
+    },
+    {
+      "leader": "Alexander",
+      "emoji_ID": "",
+      "Category": "non" 
+    },
+    {
+      "leader": "Amelia_Earhart",
+      "emoji_ID": "",
+      "Category": "non" 
+    },
+    {
+      "leader": "Amanitore",
+      "emoji_ID": "",
+      "Category": "non" 
+    }
+  ],
+  "civs": [
+    {
+      "civ": "Roman",
+      "emoji_ID": "1359640472649470112",
+      "Category": "Antiquity_Age"
+    },
+    {
+      "civ": "Persian",
+      "emoji_ID": "1359640473978798292",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Mississippian",
+      "emoji_ID": "1359640475484557473",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Maya",
+      "emoji_ID": "1359640477166473276",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Mauryan",
+      "emoji_ID": "1359640478651383938",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Khmer",
+      "emoji_ID": "1359640480551403781",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Han",
+      "emoji_ID": "1359640482111553656",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Greek",
+      "emoji_ID": "1359640483730690289",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Egyptian",
+      "emoji_ID": "1359640485311807538",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Carthaginian",
+      "emoji_ID": "1359640486867898378",
+      "Category": "Antiquity_Age" 
+    },
+    {
+      "civ": "Aksumite",
+      "emoji_ID": "1359640587510349914",
+      "Category": "Antiquity_Age" 
+    }, 
+    {
+      "civ": "Abbasid",
+      "emoji_ID": "1359648834627571925",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Bulgarian",
+      "emoji_ID": "1359648979255824434",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Chola",
+      "emoji_ID": "1359648830768943288",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Hawaiian",
+      "emoji_ID": "1359648829388886196",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Incan",
+      "emoji_ID": "1359648827652571326",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Norman",
+      "emoji_ID": "1359648821218640192",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Majapahit",
+      "emoji_ID": "1359648826167656598",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Ming",
+      "emoji_ID": "1359648824297001060",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Mongolian",
+      "emoji_ID": "1359648822619537549",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Shawnee",
+      "emoji_ID": "1359648819154784477",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Songhai",
+      "emoji_ID": "1359648817728852019",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "Spanish",
+      "emoji_ID": "1359648816134885486",
+      "Category": "Exploration_Age" 
+    },
+    {
+      "civ": "American",
+      "emoji_ID": "1359654873754243122",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "British",
+      "emoji_ID": "1359654872122789968",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Bugandan",
+      "emoji_ID": "1359654870290010323",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "French_Imperial",
+      "emoji_ID": "1359654867580358706",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Meiji_Japanese",
+      "emoji_ID": "1359654865596584057",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Mexican",
+      "emoji_ID": "1359654863612547173",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Mughal",
+      "emoji_ID": "1359654861636895022",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Nepalese",
+      "emoji_ID": "1359654860089463005",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Prussian",
+      "emoji_ID": "1359654858361274448",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Qing",
+      "emoji_ID": "1359654856394149938",
+      "Category": "Modern_Age" 
+    },
+    {
+      "civ": "Russian",
+      "emoji_ID": "1359654854250725477",
+      "Category": "Modern_Age" 
+    }
+  ]
+}
+
