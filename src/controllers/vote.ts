@@ -121,4 +121,26 @@ export const VoteController = {
       main.delete()
     })
   },
+  
+  civilization7DraftVote: async (interaction: ChatInputCommandInteraction) => {
+    const canvote = VoteController.canVote(interaction)
+    if (!canvote)
+      return interaction.reply({ content: 'Cannot vote.', ephemeral: true })
+    voteInProgress = true
+    const members = await MentionsController.addOrRemoveMentionedUsers(
+      interaction,
+      await VoiceController.getUsersInVoiceChannel(interaction)
+    )
+  },
+
+  civilization6DraftVote: async (interaction: ChatInputCommandInteraction) => {
+    const canvote = VoteController.canVote(interaction)
+    if (!canvote)
+      return interaction.reply({ content: 'Cannot vote.', ephemeral: true })
+    voteInProgress = true
+    const members = await MentionsController.addOrRemoveMentionedUsers(
+      interaction,
+      await VoiceController.getUsersInVoiceChannel(interaction)
+    )
+  }
 }

@@ -16,45 +16,45 @@ export const data = addOptionalMentions(
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (
-    !ChannelController.isChannel(interaction, config.discord.channels.civ7commands)
+    !(
+      ChannelController.isChannel(interaction, config.discord.channels.civ7commands) ||
+      ChannelController.isChannel(interaction, config.discord.channels.civ6commands)
+    )
   )
-    return
+    return;
+
   const members = await MentionsController.addOrRemoveMentionedUsers(
     interaction,
     await VoiceController.getUsersInVoiceChannel(interaction)
-  )
-  if (members.length < 2)
+  );
+  
+  if (members.length < 2) {
     return interaction.reply({
       content: 'You cannot generate teams with less than 2 players.',
       ephemeral: true,
-    })
-  const shuffled = shuffleArray(members)
+    });
+  }
+
+  const shuffled = shuffleArray(members);
   const teams = [
     shuffled.slice(0, Math.ceil(shuffled.length / 2)),
-    shuffled.slice(Math.ceil(shuffled.length / 2), shuffled.length),
-  ]
+    shuffled.slice(Math.ceil(shuffled.length / 2)),
+  ];
+  
   if (interaction.channel?.isTextBased() && 'send' in interaction.channel) {
-    interaction.channel.send({
+    await interaction.channel.send({
       embeds: [
         {
           title: 'Team Generator',
           color: 0x006dff,
           fields: [
-            {
-              name: 'Team 1',
-              value: teams[0].join('\n'),
-              inline: true,
-            },
-            {
-              name: 'Team 2',
-              value: teams[1].join('\n'),
-              inline: true,
-            },
+            { name: 'Team 1', value: teams[0].join('\n'), inline: true },
+            { name: 'Team 2', value: teams[1].join('\n'), inline: true },
           ],
         },
       ],
-    })
+    });
   }
-  interaction.reply({ content: 'Teams generated', ephemeral: true })
-  interaction.deleteReply()
+  
+  await interaction.reply({ content: 'Teams generated', ephemeral: true });
 }

@@ -4,7 +4,7 @@ import { config } from '../../config'
 import { ChannelController } from '../../controllers'
 
 export const data = new SlashCommandBuilder()
-  .setName('vote')
+  .setName('civ6draftvote')
   .setDescription('initiate a game vote')
   .addStringOption((option) =>
     option

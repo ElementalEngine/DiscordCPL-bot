@@ -17,19 +17,24 @@ const cors: CorsOptions = {
 
 
 const discord = {
-  clientId: process.env.DISCORD_CLIENT_ID ?? '',
-  clientSecret: process.env.DISCORD_CLIENT_SECRET ?? '',
+  clientId: process.env.BOT_CLIENT_ID ?? '',
+  clientSecret: process.env.BOT_CLIENT_SECRET ?? '',
   guildId: process.env.DISCORD_GUILD_ID ?? '',
-  token: process.env.DISCORD_TOKEN ?? '',
+  token: process.env.BOT_TOKEN ?? '',
   channels: {
-    civ7commands: process.env.CIV7_CHANNEL_COMMANDS!,
-    civ6commands: process.env.CIV6_CHANNEL_COMMANDS!,
-    civ6ffavoting: process.env.CIV6_FFA_CHANNEL_VOTING!,
-    civ6teamvoting: process.env.CIV6_TEAM_CHANNEL_VOTING!,
-    civ7ffavoting: process.env.CIV7_FFA_CHANNEL_VOTING!,
-    civ7teamvoting: process.env.CIV7_TEAM_CHANNEL_VOTING!,
-    civ6lobbylinks: process.env.CIV6_CHANNEL_LOBBYLINKS!,
-    civ7lobbylinks: process.env.CIV7_CHANNEL_LOBBYLINKS!,
+    civ7commands: process.env.CHANNEL_COMMANDS_CIV6!,
+    civ6commands: process.env.CHANNEL_COMMANDS_CIV7!,
+    civ6ffavoting: process.env.CHANNEL_FFA_VOTING_CIV6!,
+    civ6teamvoting: process.env.CHANNEL_TEAM_VOTING_CIV6!,
+    civ7ffavoting: process.env.CHANNEL_FFA_VOTING_CIV7!,
+    civ7teamvoting: process.env.CHANNEL_TEAM_VOTING_CIV7!,
+    civ6lobbylinks: process.env.CHANNEL_LOBBYLINKS_CIV6!,
+    civ7lobbylinks: process.env.CHANNEL_LOBBYLINKS_CIV7!,
+  },
+  roles: {
+    moderator: process.env.ROLE_MODERATOR!,
+    Civ6Rank: process.env.ROLE_CIV6!,
+    Civ7Rank: process.env.ROLE_CIV7!,
   },
 }
 
@@ -50,4 +55,5 @@ export const config = {
   host: process.env.HOST!,
   port: Number(process.env.PORT!),
   trueskill,
+  mongoDb: process.env.MONGODB_URI!,
 }
