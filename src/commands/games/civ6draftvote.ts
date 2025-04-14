@@ -21,7 +21,7 @@ export const data = addOptionalMentions(
     .addStringOption((option) =>
       option
         .setName('params')
-        .setDescription('Optional parameters (e.g., member exclusions)')
+        .setDescription('Optional parameters (e.g., member exclusions or include)')
         .setRequired(false)
     ) as SlashCommandBuilder
 );
