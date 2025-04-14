@@ -1,6 +1,6 @@
 // General settings.
 export const MAX_MENTIONS: number = 14;
-export const VOTE_TIMER: number = 1000 * 60 * 2;   
+export const VOTE_TIMER_SV: number = 1000 * 60 * 2;   
 export const VOTE_TIMER_DRAFT: number = 1000 * 60 * 10;
 
 export const EMOJI_NO: string = ':x:';
@@ -21,6 +21,7 @@ export enum DraftMode {
   BLIND = "Blind",
   RANDOM = "Random",
   SNAKE = "Snake",
+  DRAFT_2 = "Draft 2",
 }
 
 // Vote settings for Civ6 
@@ -170,6 +171,7 @@ export const CIV7_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
     { emoji: "🚫", label: DraftMode.NO_TRADE },
     { emoji: "🅱️", label: DraftMode.BLIND },
     { emoji: "❓", label: DraftMode.RANDOM },
+    { emoji: "🎲", label: DraftMode.DRAFT_2 },
   ],
 };
 
