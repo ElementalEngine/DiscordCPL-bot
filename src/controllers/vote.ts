@@ -11,7 +11,7 @@ import {
   EMOJI_NO,
   EMOJI_QUESTION,
   EMOJI_YES,
-  VOTE_TIMER,
+  VOTE_TIMER_SV,
   config,
 } from '../config'
 import { ChannelController } from './channel'
@@ -88,7 +88,7 @@ export const VoteController = {
       //  @ts-ignore
       const message = await member.send({ embeds: [embed], components: [row] })
       return message
-        .awaitMessageComponent({ time: VOTE_TIMER })
+        .awaitMessageComponent({ time: VOTE_TIMER_SV })
         .then(async ({ customId }) => {
           votes[customId]++
           await message.edit({

@@ -1,24 +1,23 @@
 import { civ6Leaders } from '../data/civ6'
 import { civ7Leaders, civ7Civs } from '../data/civ7'
-
 import { DraftMode } from '../config/constants'
 
 // Types
 type GameType = 'civ6' | 'civ7'
 
-type Civ = {
+export type Civ = {
   civ: string
   emoji_ID: string
   age_pool: 'Antiquity_Age' | 'Exploration_Age' | 'Modern_Age'
 }
 
-type Leader = {
+export type Leader = {
   leader: string
   emoji_ID: string
   Category?: string
 }
 
-type DraftPick = {
+export type DraftPick = {
   name: string
   emoji_ID: string
 }
@@ -91,9 +90,12 @@ export const draftmodeController = {
       case DraftMode.RANDOM:
       case DraftMode.BLIND:
         return this._randomSplit(players, pool, maxPerPlayer, toPick)
-      case DraftMode.SNAKE:
-        return this._snakeDraft(players, pool, toPick)
-      default:
+      case DraftMode.DRAFT_2: {
+        // For team draft, ignore the players array and split pool between two teams.
+        const maxTeam = maxPerPlayer ?? Math.floor(pool.length / 2)
+        return this._teamDraft(pool, maxTeam, toPick)
+      }
+      default: // Covers WITH_TRADE and NO_TRADE
         return this._fairSplit(players, pool, maxPerPlayer, toPick)
     }
   },
@@ -131,9 +133,9 @@ export const draftmodeController = {
       }
     }
 
-    for (const p of players) {
+    players.forEach(p => {
       result[p] = result[p].slice(0, max)
-    }
+    })
 
     return result
   },
@@ -143,8 +145,23 @@ export const draftmodeController = {
     pool: T[],
     toPick: (item: T) => DraftPick
   ): Record<string, DraftPick[]> {
-    // Placeholder snake draft logic using random as default
+    // Placeholder for snake draft logic using random split.
     const max = Math.floor(pool.length / players.length)
     return this._randomSplit(players, pool, max, toPick)
+  },
+
+  _teamDraft<T>(
+    pool: T[],
+    maxPerTeam: number,
+    toPick: (item: T) => DraftPick
+  ): Record<string, DraftPick[]> {
+    const shuffled = [...pool].sort(() => Math.random() - 0.5)
+    const half = Math.ceil(shuffled.length / 2)
+    const team1 = shuffled.slice(0, half).slice(0, maxPerTeam).map(toPick)
+    const team2 = shuffled.slice(half).slice(0, maxPerTeam).map(toPick)
+    return {
+      "Team 1": team1,
+      "Team 2": team2,
+    }
   },
 }

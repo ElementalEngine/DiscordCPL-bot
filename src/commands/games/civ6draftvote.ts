@@ -4,7 +4,7 @@ import { addOptionalMentions } from '../../utils';
 
 export const data = addOptionalMentions(
   new SlashCommandBuilder()
-    .setName('civ7draft') 
+    .setName('civ6draft') 
     .setDescription('Description of your command')
     .addStringOption((option) =>
       option
