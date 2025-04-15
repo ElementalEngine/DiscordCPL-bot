@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/ElementalEngine/DiscordCPL-bot#readme",
   "devDependencies": {
-    "@types/body-parser": "^1.19.2",   
+    "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/node": "^20.3.3",
@@ -33,6 +33,7 @@
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "mongoose": "^8.13.2",
     "steamapi": "^2.4.2",
     "ts-node": "^10.9.1"
   }
