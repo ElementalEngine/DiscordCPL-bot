@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { config } from '../config';
+import * as models from './models';
+import * as queries from './queries';
 
 export const connectDB = async (): Promise<void> => {
   try {
@@ -10,3 +12,5 @@ export const connectDB = async (): Promise<void> => {
     process.exit(1);
   }
 };
+
+export { models, queries };
