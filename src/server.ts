@@ -1,19 +1,43 @@
-import bodyParser from 'body-parser'
-import cors from 'cors'
-import express from 'express'
-// import session from 'express-session'
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';              
+import morgan from 'morgan';              
 
-import { config } from './config'
-import Routes from './routes'
+import { config } from './config';
+import Routes from './routes';
 
-const app = express()
+const app = express();
 
-app.use(cors(config.cors))
-// app.use(session(config.session))
+// ─── MIDDLEWARE ────────────────────────────────────────────────────────────
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(helmet());
 
-app.use('/', Routes())
+app.use(cors(config.cors));
 
-export default app
+app.use(morgan('dev'));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// ─── ROUTES ────────────────────────────────────────────────────────────────
+
+// Mount all your routers
+app.use('/', Routes());
+
+// ─── FALLBACKS ─────────────────────────────────────────────────────────────
+
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
+// Global error handler
+app.use(
+  (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error(err);
+    res
+      .status(err.status || 500)
+      .json({ error: err.message || 'Internal Server Error' });
+  }
+);
+
+export default app;

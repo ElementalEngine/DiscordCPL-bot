@@ -1,13 +1,13 @@
-import { Router } from 'express'
+import { Router } from 'express';
+import lobbyLinks from './lobbyLinks.routes';
 
-import JoinRoutes from './join'
 
-const router = Router()
+export default function Routes() {
+  const router = Router();
 
-const Routes = () => {
-  router.use('/join', JoinRoutes())
+  router.use('/lobby', lobbyLinks);
 
-  return router
+  // …router.use('/other', otherRoutes);
+
+  return router;
 }
-
-export default Routes

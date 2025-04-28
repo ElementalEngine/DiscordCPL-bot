@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { VoteController } from '../../controllers';
+import { VoteService } from '../../services/vote.service';
 import { addOptionalMentions } from '../../utils';
 
 export const data = addOptionalMentions(
@@ -36,5 +36,5 @@ export const data = addOptionalMentions(
 );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  await VoteController.civilization7DraftVote(interaction);
+  await VoteService.civilization7DraftVote(interaction);
 };
