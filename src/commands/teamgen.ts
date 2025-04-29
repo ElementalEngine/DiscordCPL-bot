@@ -2,11 +2,11 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
+  TextBasedChannel,
 } from 'discord.js';
 import { ensureChannel } from '../services/commandGuards.service';
 import { config } from '../config';
-import { toggleMentionedUsers } from '../handlers/mentions.handler';
-import { getUsersInVoiceChannel } from '../handlers/voice.handler';
+import { collectParticipants } from '../handlers/collectParticipants.handler';      
 import { addOptionalMentions, shuffleArray } from '../utils';
 
 export const data = addOptionalMentions(
@@ -15,31 +15,45 @@ export const data = addOptionalMentions(
     .setDescription('Send a randomly generated team suggestion')
 );
 
-export const execute = async (interaction: ChatInputCommandInteraction) => {
+export const execute = async (
+  interaction: ChatInputCommandInteraction
+): Promise<void> => {
+  // 1) Channel guard
   if (
     !ensureChannel(interaction, [
       config.discord.channels.civ6commands,
       config.discord.channels.civ7commands,
     ])
-  )
-    return;
+  ) return;
 
-  let members = await getUsersInVoiceChannel(interaction);
-  members     = await toggleMentionedUsers(interaction, members);
+  // 2) Gather participants (voice + mentions)
+  const members = await collectParticipants(interaction);
 
+  // 3) Must have at least two participants
   if (members.length < 2) {
     await interaction.reply({
-      content: 'You cannot generate teams with less than 2 players.',
+      content: 'You need at least two participants (voice channel or @mentions).',
       ephemeral: true,
     });
     return;
   }
 
-  const shuffled = shuffleArray(members);
-  const mid      = Math.ceil(shuffled.length / 2);
-  const team1    = shuffled.slice(0, mid);
-  const team2    = shuffled.slice(mid);
+  // 4) Disallow odd number of participants
+  if (members.length % 2 !== 0) {
+    await interaction.reply({
+      content: 'Cannot split an odd number of players into two even teams. Please add or remove one participant.',
+      ephemeral: true,
+    });
+    return;
+  }
 
+  // 5) Shuffle and split evenly
+  const shuffled = shuffleArray(members);
+  const half     = members.length / 2;
+  const team1    = shuffled.slice(0, half);
+  const team2    = shuffled.slice(half);
+
+  // 6) Build the embed
   const embed = new EmbedBuilder()
     .setTitle('Team Generator')
     .setColor(0x006dff)
@@ -48,10 +62,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       { name: 'Team 2', value: team2.map(m => m.user.tag).join('\n'), inline: true }
     );
 
-  const channel = interaction.channel;
-  if (channel?.isTextBased() && 'send' in channel) {
-    channel.send({ embeds: [embed] });
-  }
-
-  await interaction.reply({ content: 'Teams generated!', ephemeral: true });
+  // 7) Send embed as reply
+  await interaction.reply({ embeds: [embed] });
 };
