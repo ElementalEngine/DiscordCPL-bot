@@ -1,51 +1,50 @@
-import { Client, Collection, Events, GatewayIntentBits } from 'discord.js'
-import fs from 'fs'
-import path from 'path'
-
-import { deploy } from './deploy'
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
+import fs from 'fs';
+import path from 'path';
+import { deploy } from './deploy';
 
 const client: any = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
-})
+});
 
-client.commands = new Collection()
+// Load commands dynamically from both files and folders
+client.commands = new Collection<string, { data: any; execute: any }>();
+const commandsPath = path.join(__dirname, '../commands');
+const entries = fs.readdirSync(commandsPath, { withFileTypes: true });
 
-const foldersPath = path.join(__dirname, '../commands')
-const commandFolders = fs.readdirSync(foldersPath)
+for (const entry of entries) {
+  const fullPath = path.join(commandsPath, entry.name);
 
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder)
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith('.ts'))
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file)
-    const command = require(filePath)
-    if ('data' in command && 'execute' in command) {
-      client.commands.set(command.data.name, command)
-    } else {
-      console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
-      )
+  if (entry.isDirectory()) {
+    // Subdirectory: load each .ts file
+    const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.ts'));
+    for (const file of files) {
+      const { data, execute } = require(path.join(fullPath, file));
+      if (data && execute) {
+        client.commands.set(data.name, { data, execute });
+      }
+    }
+  } else if (entry.isFile() && entry.name.endsWith('.ts')) {
+    // Top-level .ts file
+    const { data, execute } = require(fullPath);
+    if (data && execute) {
+      client.commands.set(data.name, { data, execute });
     }
   }
 }
 
-const eventsPath = path.join(__dirname, 'events')
-const eventFiles = fs
-  .readdirSync(eventsPath)
-  .filter((file) => file.endsWith('.ts'))
-
+// Load events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(f => f.endsWith('.ts'));
 for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file)
-  const event = require(filePath)
+  const event = require(path.join(eventsPath, file));
   if (event.once) {
-    client.once(event.name, (...args: any) => event.execute(...args))
+    client.once(event.name, (...args: any[]) => event.execute(...args));
   } else {
-    client.on(event.name, (...args: any) => event.execute(...args))
+    client.on(event.name, (...args: any[]) => event.execute(...args));
   }
 }
 
-deploy()
+deploy();
 
-export default client
+export default client;
