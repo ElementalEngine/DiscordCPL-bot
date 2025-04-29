@@ -1,25 +1,31 @@
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 
-// Toggle each optionally-passed `userX` in/out of the members list.
-
 export async function toggleMentionedUsers(
   interaction: ChatInputCommandInteraction,
   members: GuildMember[]
 ): Promise<GuildMember[]> {
+  const originalIds = new Set(members.map(m => m.id));
+
+  const mentionIds = new Set<string>();
   for (let i = 0; i < 15; i++) {
     const opt = i === 0 ? 'user' : `user${i + 1}`;
-    const user = interaction.options.getUser(opt);
-    if (!user || !interaction.guild) continue;
+    const u = interaction.options.getUser(opt);
+    if (u) mentionIds.add(u.id);
+  }
 
-    const member = interaction.guild.members.cache.get(user.id);
-    if (!member) continue;
+  for (const id of mentionIds) {
+    const wasInOriginal = originalIds.has(id);
+    const idx = members.findIndex(m => m.id === id);
 
-    const idx = members.findIndex(m => m.id === member.id);
-    if (idx > -1) {
+    if (wasInOriginal && idx > -1) {
       members.splice(idx, 1);
-    } else {
-      members.push(member);
+    } else if (!wasInOriginal) {
+      const member = interaction.guild?.members.cache.get(id);
+      if (member) {
+        members.push(member);
+      }
     }
   }
+
   return members;
 }
