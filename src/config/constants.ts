@@ -11,6 +11,7 @@ export const EMOJI_SPY           = '🕵️';
 export const EMOJI_RESULTS       = '🗳️';
 export const EMOJI_ID            = '🆔';
 export const EMOJI_PARTICIPANTS  = '👥';
+export const EMOJI_READY         = '➕';
 
 export const EMOJI_DRAFT_FINISH: string = '✅';
 export const EMOJI_DRAFT_CANCEL: string = '❌';
