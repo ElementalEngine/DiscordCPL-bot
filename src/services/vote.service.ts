@@ -17,7 +17,10 @@ import {
   EMOJI_RESULTS,
   EMOJI_ID,
   EMOJI_PARTICIPANTS,
+  EMOJI_READY,
   VOTE_TIMER_SV,
+  VOTE_TIMER_DRAFT,
+  CIV7_VOTE_SETTINGS
 } from '../config/constants';
 
 let voteInProgress = false;
@@ -150,12 +153,202 @@ export const VoteService = {
   //   return toggleMentionedUsers(interaction, members);
   // },
 
-  // async civilization7DraftVote(
-  //   interaction: ChatInputCommandInteraction
-  // ): Promise<GuildMember[]> {
-  //   if (!this.canVote(interaction)) return [];
-  //   voteInProgress = true;
-  //   const members = await getUsersInVoiceChannel(interaction);
-  //   return toggleMentionedUsers(interaction, members);
-  // },
+  async civilization7DraftVote(
+    interaction: ChatInputCommandInteraction
+  ): Promise<GuildMember[]> {
+    if (voteInProgress) {
+      await interaction.reply({ content: 'A vote is already in progress.', ephemeral: true });
+      return [];
+    }
+    voteInProgress = true;
+
+    // 1️⃣ Defer reply
+    await interaction.deferReply();
+
+    // 2️⃣ Collect participants (voice + mentions + self)
+    const members = await collectParticipants(interaction);
+    if (members.length < 2) {
+      await interaction.editReply('Cannot start draft: need at least two participants.');
+      voteInProgress = false;
+      return [];
+    }
+    const playerTags = members.map(m => m.user.tag).join(', ');
+
+    // 3️⃣ Ensure text channel
+    const channel = interaction.channel as TextBasedChannel | null;
+    if (!channel?.isTextBased()) {
+      await interaction.editReply('Drafts must be run in a text channel.');
+      voteInProgress = false;
+      return [];
+    }
+
+    // 4️⃣ Send all setting polls
+    type Poll = {
+      category: string;
+      options: typeof CIV7_VOTE_SETTINGS[string];
+      message: Message;
+    };
+    const polls: Poll[] = [];
+    for (const [category, options] of Object.entries(CIV7_VOTE_SETTINGS)) {
+      const embed = new EmbedBuilder()
+        .setTitle(category)
+        .setDescription(options.map(o => `${o.emoji}  ${o.label}`).join('\n'))
+        .setFooter({ text: `React within ${VOTE_TIMER_DRAFT/1000}s` })
+        .setTimestamp();
+
+      const msg = await channel.send({ embeds: [embed] });
+      for (const opt of options) {
+        await msg.react(opt.emoji);
+      }
+      polls.push({ category, options, message: msg });
+    }
+
+    // 5️⃣ Send “Ban Leaders” poll
+    const banEmbed = new EmbedBuilder()
+      .setTitle('Ban Leaders')
+      .setDescription(civ7Leaders.map(l => `<:${l.emoji_ID}>  ${l.leader}`).join('\n'))
+      .setFooter({ text: `React within ${VOTE_TIMER_DRAFT/1000}s` })
+      .setTimestamp();
+
+    const banMsg = await channel.send({ embeds: [banEmbed] });
+    for (const leader of civ7Leaders) {
+      await banMsg.react(leader.emoji_ID);
+    }
+
+    // 6️⃣ Collect all reactions in parallel
+    const pollPromises = polls.map(poll =>
+      poll.message.awaitReactions({
+        time: VOTE_TIMER_DRAFT,
+        filter: (reaction, user) =>
+          !user.bot && poll.options.some(o => o.emoji === reaction.emoji.name),
+      })
+    );
+    const banPromise = banMsg.awaitReactions({
+      time: VOTE_TIMER_DRAFT,
+      filter: (reaction, user) =>
+        !user.bot && civ7Leaders.some(l => l.emoji_ID === reaction.emoji.name),
+    });
+
+    const pollResults = await Promise.all(pollPromises);
+    const banReactions = await banPromise;
+
+    // 7️⃣ Tally each poll (majority threshold)
+    const majorityThreshold = Math.floor(members.length / 2) + 1;
+    const chosenSettings: Record<string,string> = {};
+
+    pollResults.forEach((reactions, idx) => {
+      const { category, options } = polls[idx];
+      const counts = options.map(o => ({
+        label: o.label,
+        count: (reactions.get(o.emoji)?.count ?? 1) - 1,
+      }));
+
+      // find any with majority
+      const majority = counts.filter(c => c.count >= majorityThreshold);
+      let winner: string;
+      if (majority.length === 1) {
+        winner = majority[0].label;
+      } else {
+        // fall back to highest count
+        const top = counts.reduce((a, b) => (b.count > a.count ? b : a), counts[0]);
+        winner = top.label;
+      }
+
+      chosenSettings[category] = winner;
+      channel.send(`**${category}** → **${winner}**`);
+    });
+
+    // 8️⃣ Tally bans (majority threshold)
+    const bans = civ7Leaders
+      .filter(l => ((banReactions.get(l.emoji_ID)?.count ?? 1) - 1) >= majorityThreshold)
+      .map(l => l.leader);
+
+    if (bans.length) {
+      await channel.send(`Banned leaders (≥${majorityThreshold} votes): ${bans.join(', ')}`);
+    } else {
+      await channel.send('No leaders banned.');
+    }
+
+    // 9️⃣ “Ready?” phase: wait for all participants to react ➕
+    const notReady = new Set(members.map(m => m.id));
+    const readyEmbed = new EmbedBuilder()
+      .setTitle('Confirm Ready')
+      .setDescription(
+        `Players not yet ready:\n${members.map(m => `<@${m.id}>`).join('\n')}`
+      )
+      .setFooter({ text: `React with ${EMOJI_READY} to continue` })
+      .setTimestamp();
+
+    const readyMsg = await channel.send({ embeds: [readyEmbed] });
+    await readyMsg.react(EMOJI_READY);
+
+    await new Promise<void>(resolve => {
+      const collector = readyMsg.createReactionCollector({
+        filter: (reaction, user) =>
+          reaction.emoji.name === EMOJI_READY && notReady.has(user.id),
+      });
+
+      collector.on('collect', (_, user) => {
+        notReady.delete(user.id);
+        readyMsg.edit({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle('Confirm Ready')
+              .setDescription(
+                notReady.size
+                  ? `Players not yet ready:\n${[...notReady].map(id => `<@${id}>`).join('\n')}`
+                  : 'All players ready! Generating draft…'
+              )
+              .setTimestamp(),
+          ],
+        });
+
+        if (notReady.size === 0) collector.stop();
+      });
+
+      collector.on('end', () => resolve());
+    });
+
+    // 🔟 Derive mode & age, generate pools
+    const modeLabel = chosenSettings['Draft Mode'];
+    const draftMode: DraftMode =
+      modeLabel === DraftMode.DRAFT_2   ? DraftMode.DRAFT_2  :
+      modeLabel === DraftMode.SNAKE     ? DraftMode.SNAKE    :
+      modeLabel === DraftMode.NO_TRADE  ? DraftMode.NO_TRADE :
+      DraftMode.WITH_TRADE;
+
+    const startingAge = interaction.options.getString('startingage', true) as
+      | 'Antiquity_Age'
+      | 'Exploration_Age'
+      | 'Modern_Age';
+
+    const pools = draftmodeController.generateDraftPool(
+      'civ7',
+      draftMode,
+      members.map(m => m.user.tag),
+      { civs: civ7Civs, age: startingAge, bans }
+    );
+
+    // 1️⃣1️⃣ Send final picks
+    const resultEmbed = new EmbedBuilder()
+      .setTitle('Civ VII Draft Picks')
+      .addFields(
+        { name: 'Players',       value: playerTags },
+        { name: 'Draft Mode',    value: draftMode,    inline: true },
+        { name: 'Starting Age',  value: startingAge,  inline: true }
+      )
+      .setTimestamp();
+
+    for (const [player, picks] of Object.entries(pools)) {
+      const list = picks.map(p => `${p.emoji_ID} ${p.name}`).join('\n') || '—';
+      resultEmbed.addFields({ name: player, value: list, inline: true });
+    }
+
+    await channel.send({ embeds: [resultEmbed] });
+
+    // 1️⃣2️⃣ Finalize slash reply
+    await interaction.editReply({ content: '🎉 Civ VII draft complete!', embeds: [] });
+    voteInProgress = false;
+    return members;
+  },
 };
