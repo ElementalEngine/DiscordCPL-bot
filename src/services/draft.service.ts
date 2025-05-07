@@ -61,8 +61,6 @@ export class DraftService {
           }));
       }
     }
-
-    // ─── Civ 7, non-Snake modes (single‐pool civ picks) ────────
     {
       const pool      = civ7Civs
         .filter(c => c.age_pool === opts.age)
@@ -90,7 +88,7 @@ export class DraftService {
   }
 
   // ────────────────────────────────────────────────────────────
-  // Single‐pool strategies (generic)
+  // Single‐pool strategies 
   // ────────────────────────────────────────────────────────────
   private static _randomSplit<T>(
     players:    string[],
@@ -149,7 +147,7 @@ export class DraftService {
   }
 
   // ────────────────────────────────────────────────────────────
-  // Dual‐phase Snake (leaders then civs for Civ 7)
+  // Dual‐phase Snake 
   // ────────────────────────────────────────────────────────────
   private static _snakeDualPhase<L, C>(
     players:     string[],
