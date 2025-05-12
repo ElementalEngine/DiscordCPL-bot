@@ -13,8 +13,6 @@ export const EMOJI_ID            = '🆔';
 export const EMOJI_PARTICIPANTS  = '👥';
 export const EMOJI_READY         = '➕';
 
-export const EMOJI_DRAFT_FINISH: string = '✅';
-export const EMOJI_DRAFT_CANCEL: string = '❌';
 export interface VoteSettingOption {
   emoji: string;
   label: string;
@@ -29,6 +27,8 @@ export enum DraftMode {
   SNAKE = "Snake",
   DRAFT_2 = "Draft 2",
 }
+
+
 
 // Vote settings for Civ6 
 export const CIV6_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
