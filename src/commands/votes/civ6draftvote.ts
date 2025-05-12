@@ -42,6 +42,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   };
   if (!ensureChannel(interaction, [channelMap[mode]])) return;
 
-  await VoteService.civilization6DraftVote(interaction);
-  (interaction);
+  // await VoteService.civilization6DraftVote(interaction);
+  // (interaction);
 };
