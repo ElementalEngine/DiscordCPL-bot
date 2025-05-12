@@ -161,7 +161,6 @@ export class DraftService {
     const result: Record<string, DraftPick[]> = {};
     players.forEach(p => (result[p] = []));
 
-    // Phase 1: leaders (unique)
     const leaderRounds = Math.ceil(leaderPool.length / perLeader);
     for (let r = 0; r < leaderRounds; r++) {
       const slice = leaderPool.slice(r * perLeader, (r + 1) * perLeader);
@@ -171,7 +170,6 @@ export class DraftService {
       });
     }
 
-    // Phase 2: civs (with replacement)
     const totalCivs   = perCiv * players.length;
     const randomCivs  = Array.from({ length: totalCivs }, () =>
       civPool[Math.floor(Math.random() * civPool.length)]
