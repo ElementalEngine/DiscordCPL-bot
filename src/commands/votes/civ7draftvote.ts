@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { ensureChannel, ensurePermissions } from '../../services/commandGuards.service';
 import { config } from '../../config';
-import { addOptionalMentions } from '../../utils'
-import { DraftService } from '../../services/draft.service';
+import { addOptionalMentions } from '../../utils';
+import { VoteService } from '../../services/vote.service';
 
 export const data = addOptionalMentions(
   new SlashCommandBuilder()
@@ -14,8 +14,8 @@ export const data = addOptionalMentions(
         .setDescription('Select game mode: FFA or Team')
         .setRequired(true)
         .addChoices(
-          { name: 'ffa', value: 'ffa' },
-          { name: 'team', value: 'team' }
+          { name: 'ffa',   value: 'ffa'   },
+          { name: 'team',  value: 'team'  }
         )
     )
     .addStringOption(option =>
@@ -24,9 +24,9 @@ export const data = addOptionalMentions(
         .setDescription('Select starting age')
         .setRequired(true)
         .addChoices(
-          { name: 'Antiquity', value: 'Antiquity_Age' },
+          { name: 'Antiquity',  value: 'Antiquity_Age'   },
           { name: 'Exploration', value: 'Exploration_Age' },
-          { name: 'Modern', value: 'Modern_Age' }
+          { name: 'Modern',      value: 'Modern_Age'      }
         )
     ) as SlashCommandBuilder
 );
@@ -41,5 +41,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (!ensureChannel(interaction, [allowedChannelId])) return;
   if (!ensurePermissions(interaction, [config.discord.roles.Civ7Rank])) return;
 
-  // await DraftService.civilization7DraftVote(interaction);
+  await VoteService.civ7Draft(interaction);
 }
