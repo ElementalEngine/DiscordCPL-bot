@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
-import { VoteService } from '../../services/vote.service'
+import { VoteService } from '../../services/votes'
 import { addOptionalMentions } from '../../utils'
 
 export const data = addOptionalMentions(

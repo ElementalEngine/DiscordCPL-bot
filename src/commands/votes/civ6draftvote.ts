@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { ensurePermissions, ensureChannel } from '../../services/commandGuards.service';
-import { VoteService } from '../../services/vote.service';
+import { ensurePermissions, ensureChannel } from '../../utils/commandGuards';
+import { VoteService } from '../../services/votes';
 import { config } from '../../config';
 import { addOptionalMentions } from '../../utils';
 

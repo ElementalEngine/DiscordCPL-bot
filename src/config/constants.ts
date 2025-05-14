@@ -1,9 +1,8 @@
-// General settings.
 export const MAX_MENTIONS: number = 14;
+
 export const VOTE_TIMER_SV: number = 1000 * 60 * 2;   
 export const VOTE_TIMER_DRAFT: number = 1000 * 60 * 10;
 
-// Emojis for various purposes.
 export const EMOJI_YES           = '👍';
 export const EMOJI_NO            = '👎';
 export const EMOJI_QUESTION      = '❓';
@@ -11,14 +10,13 @@ export const EMOJI_SPY           = '🕵️';
 export const EMOJI_RESULTS       = '🗳️';
 export const EMOJI_ID            = '🆔';
 export const EMOJI_PARTICIPANTS  = '👥';
-export const EMOJI_READY         = '➕';
+export const EMOJI_FINISHED      = '➕';
 
 export interface VoteSettingOption {
   emoji: string;
   label: string;
 }
 
-// Enum for Draft Mode settings.
 export enum DraftMode {
   WITH_TRADE = "With Trade",
   NO_TRADE = "No Trade",
@@ -28,9 +26,6 @@ export enum DraftMode {
   DRAFT_2 = "Draft 2",
 }
 
-
-
-// Vote settings for Civ6 
 export const CIV6_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
   "Official Friends/Allies": [
     { emoji: "0️⃣", label: "None" },

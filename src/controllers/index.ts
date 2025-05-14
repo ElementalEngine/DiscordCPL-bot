@@ -1,2 +1,2 @@
-export * from './draftmode'
 export * from './lobbyLinks.controller'
+export * from './votes.controller'

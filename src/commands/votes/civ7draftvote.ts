@@ -1,8 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { ensureChannel, ensurePermissions } from '../../services/commandGuards.service';
 import { config } from '../../config';
-import { addOptionalMentions } from '../../utils';
-import { VoteService } from '../../services/vote.service';
+import { addOptionalMentions, ensureChannel, ensurePermissions } from '../../utils';
+import { VoteService } from '../../services/votes';
 
 export const data = addOptionalMentions(
   new SlashCommandBuilder()
@@ -43,3 +42,4 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   await VoteService.civ7Draft(interaction);
 }
+

@@ -22,8 +22,8 @@ const discord = {
   guildId: process.env.DISCORD_GUILD_ID ?? '',
   token: process.env.BOT_TOKEN ?? '',
   channels: {
-    civ7commands: process.env.CHANNEL_COMMANDS_CIV6!,
-    civ6commands: process.env.CHANNEL_COMMANDS_CIV7!,
+    civ7commands: process.env.CHANNEL_COMMANDS_CIV7!,
+    civ6commands: process.env.CHANNEL_COMMANDS_CIV6!,
     civ6ffavoting: process.env.CHANNEL_FFA_VOTING_CIV6!,
     civ6teamvoting: process.env.CHANNEL_TEAM_VOTING_CIV6!,
     civ7ffavoting: process.env.CHANNEL_FFA_VOTING_CIV7!,
