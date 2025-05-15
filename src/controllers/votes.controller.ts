@@ -1,17 +1,15 @@
 import { ChatInputCommandInteraction } from 'discord.js';
-import { VoteService } from '../services/votes';
+import SecretVoteService from '../services/votes/secret-vote.service';
+import Civ7DraftService from '../services/votes/civ7-draft.service';
 
 export class VotesController {
-  static async startCiv7Draft(interaction: ChatInputCommandInteraction) {
-    return VoteService.civ7Draft(interaction);
-  }
-
   static async startSecretVote(interaction: ChatInputCommandInteraction) {
-    return VoteService.secretVote(interaction);
+    const service = new SecretVoteService(interaction.client);
+    return service.secretVote(interaction);
   }
 
-  // when you add Civ 6 draft support you can uncomment:
-  // static async startCiv6Draft(interaction: ChatInputCommandInteraction) {
-  //   return VoteService.civ6Draft(interaction);
-  // }
+  static async startCiv7Draft(interaction: ChatInputCommandInteraction) {
+    const service = new Civ7DraftService(interaction.client);
+    // return service.startVote(interaction.channel!.id);
+  }
 }
