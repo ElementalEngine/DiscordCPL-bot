@@ -3,27 +3,15 @@ import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 export async function getVoiceChannelMembers(
   interaction: ChatInputCommandInteraction
 ): Promise<GuildMember[]> {
-  const member = interaction.member;
-  if (!member || !('voice' in member) || !member.guild) return [];
+  const guild = interaction.guild;
+  if (!guild) return [];
 
-  const voiceChannel = member.voice.channel;
-  if (!voiceChannel?.members) return [];
+  let member = interaction.member as GuildMember;
+  if (!member.voice.channel) {
+    member = await guild.members.fetch(interaction.user.id).catch(() => null as any);
+    if (!member) return [];
+  }
 
-  return Array.from(voiceChannel.members.values());
-}
-
-export async function notifyVoiceChannelMembers(
-  interaction: ChatInputCommandInteraction,
-  content: string
-): Promise<void> {
-  const members = await getVoiceChannelMembers(interaction);
-  await Promise.all(
-    members.map(async (m) => {
-      try {
-        await m.send(content);
-      } catch {
-        /* ignore */
-      }
-    })
-  );
+  const channel = member.voice.channel;
+  return channel ? Array.from(channel.members.values()) : [];
 }

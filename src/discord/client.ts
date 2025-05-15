@@ -4,7 +4,7 @@ import path from 'path';
 import { deploy } from './deploy';
 
 const client: any = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
 });
 
 // Load commands dynamically from both files and folders
