@@ -4,12 +4,12 @@ import {
   EmbedBuilder,
   TextBasedChannel,
 } from 'discord.js';
-import { ensureChannel } from '../../utils/commandGuards';
+import { ensureChannel } from '../../utils';
 import { config } from '../../config';
-import { collectParticipants } from '../../handlers/collectParticipants.handler';      
-import { addOptionalMentions, shuffleArray } from '../../utils';
+import { collectParticipants } from '../../handlers';      
+import { addMentionOptions, shuffleArray } from '../../utils';
 
-export const data = addOptionalMentions(
+export const data = addMentionOptions(
   new SlashCommandBuilder()
     .setName('teamgen')
     .setDescription('Send a randomly generated team suggestion')

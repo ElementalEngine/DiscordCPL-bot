@@ -3,7 +3,7 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
 } from 'discord.js';
-import { ensureChannel, ensurePermissions} from '../../utils/commandGuards';
+import { ensureChannel, ensurePermissions} from '../../utils';
 import { config } from '../../config';
 
 export const data = new SlashCommandBuilder()
