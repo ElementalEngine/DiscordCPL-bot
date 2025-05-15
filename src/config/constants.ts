@@ -11,6 +11,7 @@ export const EMOJI_RESULTS       = '🗳️';
 export const EMOJI_ID            = '🆔';
 export const EMOJI_PARTICIPANTS  = '👥';
 export const EMOJI_FINISHED      = '➕';
+export const EMOJI_ERROR         = '⚠️';
 
 export interface VoteSettingOption {
   emoji: string;
@@ -174,6 +175,7 @@ export const CIV7_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
     { emoji: "❓", label: DraftMode.RANDOM },
     { emoji: "🎲", label: DraftMode.DRAFT_2 },
   ],
+  "Leader Ban": []
 };
 
 export const CIV7_DEFAULT_VOTE_SETTINGS: Record<string, string> = {
