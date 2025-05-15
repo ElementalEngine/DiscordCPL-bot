@@ -1,31 +1,50 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
-import { VoteService } from '../../services/votes'
-import { addOptionalMentions } from '../../utils'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import SecretVoteService from '../../services/votes/secret-vote.service';
+import { addMentionOptions, ensureChannel, ensurePermissions } from '../../utils';
+import { config } from '../../config';
 
-export const data = addOptionalMentions(
-  new SlashCommandBuilder()
-    .setName('secretvote')
-    .setDescription('Initiate a secret vote')
-    .addStringOption((option) =>
-      option
-        .setName('type')
-        .setDescription('Choose type of vote options: cc, scrap, irrel, remap')
-        .setRequired(true)
-        .addChoices(
-          { name: 'CC', value: 'cc' },
-          { name: 'Scrap', value: 'scrap' },
-          { name: 'Irrel', value: 'irrel' },
-          { name: 'Remap', value: 'remap' }
-        )
+const dataBuilder = new SlashCommandBuilder();
+
+dataBuilder.setName('secretvote');
+dataBuilder.setDescription('Initiate a secret Yes/No vote among participants');
+
+dataBuilder.addStringOption(option =>
+  option
+    .setName('type')
+    .setDescription('Vote category: cc, scrap, irrel, remap')
+    .setRequired(true)
+    .addChoices(
+      { name: 'CC', value: 'cc' },
+      { name: 'Scrap', value: 'scrap' },
+      { name: 'Irrel', value: 'irrel' },
+      { name: 'Remap', value: 'remap' }
     )
-    .addStringOption((option) =>
-      option
-        .setName('params')
-        .setDescription('Some vote options here...')
-        .setRequired(true)
-    ) as SlashCommandBuilder
-)
+);
 
-export const execute = async (interaction: ChatInputCommandInteraction) => {
-  await VoteService.secretVote(interaction)
+dataBuilder.addStringOption(option =>
+  option
+    .setName('vote-question')
+    .setDescription('Additional vote parameters')
+    .setRequired(true)
+);
+
+addMentionOptions(dataBuilder);
+
+export const data = dataBuilder;
+
+export async function execute(interaction: ChatInputCommandInteraction) {
+  const allowedChannels = [
+    config.discord.channels.civ7commands,
+    config.discord.channels.civ6commands
+  ];
+
+  if (
+    !ensureChannel(interaction, allowedChannels) ||
+    !ensurePermissions(interaction, [config.discord.roles.Civ7Rank])
+  ) {
+    return;
+  }
+
+  const service = new SecretVoteService(interaction.client);
+  await service.secretVote(interaction);
 }
