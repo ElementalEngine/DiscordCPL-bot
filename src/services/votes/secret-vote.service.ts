@@ -50,7 +50,7 @@ export default class SecretVoteService {
     let question: string;
     try {
       type = interaction.options.getString('type', true);
-      question = interaction.options.getString('vote-question', true);
+      question = interaction.options.getString('question', true);
     } catch {
       await interaction.followUp({
         content: `${EMOJI_ERROR} Missing required vote options.`,

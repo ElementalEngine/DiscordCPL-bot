@@ -3,34 +3,31 @@ import SecretVoteService from '../../services/votes/secret-vote.service';
 import { addMentionOptions, ensureChannel, ensurePermissions } from '../../utils';
 import { config } from '../../config';
 
-const dataBuilder = new SlashCommandBuilder();
+const builder = new SlashCommandBuilder()
+  .setName('secretvote')
+  .setDescription('Initiate a secret vote')
+  .addStringOption(option =>
+    option
+      .setName('type')
+      .setDescription('Choose vote type: cc, scrap, irrel, remap')
+      .setRequired(true)
+      .addChoices(
+        { name: 'CC', value: 'cc' },
+        { name: 'Scrap', value: 'scrap' },
+        { name: 'Irrel', value: 'irrel' },
+        { name: 'Remap', value: 'remap' }
+      )
+  )
+  .addStringOption(option =>
+    option
+      .setName('question')
+      .setDescription('The question to vote on')
+      .setRequired(true)
+  );
 
-dataBuilder.setName('secretvote');
-dataBuilder.setDescription('Initiate a secret Yes/No vote among participants');
+addMentionOptions(builder as SlashCommandBuilder);
 
-dataBuilder.addStringOption(option =>
-  option
-    .setName('type')
-    .setDescription('Vote category: cc, scrap, irrel, remap')
-    .setRequired(true)
-    .addChoices(
-      { name: 'CC', value: 'cc' },
-      { name: 'Scrap', value: 'scrap' },
-      { name: 'Irrel', value: 'irrel' },
-      { name: 'Remap', value: 'remap' }
-    )
-);
-
-dataBuilder.addStringOption(option =>
-  option
-    .setName('vote-question')
-    .setDescription('Additional vote parameters')
-    .setRequired(true)
-);
-
-addMentionOptions(dataBuilder);
-
-export const data = dataBuilder;
+export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const allowedChannels = [
@@ -40,7 +37,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   if (
     !ensureChannel(interaction, allowedChannels) ||
-    !ensurePermissions(interaction, [config.discord.roles.Civ7Rank])
+    !ensurePermissions(interaction, [config.discord.roles.Civ7Rank, config.discord.roles.Civ6Rank])
   ) {
     return;
   }

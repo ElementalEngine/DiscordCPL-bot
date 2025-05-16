@@ -1,13 +1,13 @@
 import { SlashCommandBuilder, SlashCommandUserOption } from 'discord.js';
 import { MAX_MENTIONS } from '../config/constants';
 
-export function addMentionOptions(
-  builder: SlashCommandBuilder,
-  { prefix = 'user', count = MAX_MENTIONS } = {}
-): SlashCommandBuilder {
-  const existing = (builder as any).options?.length ?? 0;
-  const available = 25 - existing;                 
-  const maxPairs = Math.min(count, Math.floor(available / 2));
+export function addMentionOptions<T extends SlashCommandBuilder>(
+  builder: T,
+  { prefix = 'user', count = MAX_MENTIONS }: { prefix?: string; count?: number } = {}
+): T {
+  const existing  = builder.options?.length ?? 0;
+  const available = 25 - existing;
+  const maxPairs  = Math.min(count, Math.floor(available / 2));
 
   for (let i = 1; i <= maxPairs; i++) {
     const suffix = i === 1 ? '' : String(i);
