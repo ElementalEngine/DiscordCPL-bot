@@ -10,6 +10,6 @@ export class VotesController {
 
   static async startCiv7Draft(interaction: ChatInputCommandInteraction) {
     const service = new Civ7DraftService(interaction.client);
-    // return service.startVote(interaction.channel!.id);
+    return service.civ7Draft(interaction);  
   }
 }
