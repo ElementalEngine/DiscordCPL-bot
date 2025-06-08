@@ -173,7 +173,6 @@ export const CIV7_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
     { emoji: "🚫", label: DraftMode.NO_TRADE },
     { emoji: "🅱️", label: DraftMode.BLIND },
     { emoji: "❓", label: DraftMode.RANDOM },
-    { emoji: "🎲", label: DraftMode.DRAFT_2 },
   ],
   "Leader Ban": []
 };
