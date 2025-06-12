@@ -19,14 +19,14 @@ import {
   EMOJI_PARTICIPANTS,
   EMOJI_QUESTION,
   EMOJI_ERROR
-} from '../../config/constants';
-import { collectParticipants } from '../../handlers';
+} from '../config/constants';
+import { collectParticipants } from '../handlers';
 import {
   acquireChannelLock,
   releaseChannelLock,
   acquireUserLock,
   releaseUserLock
-} from '../../utils';
+} from '../utils';
 
 export default class SecretVoteService {
   constructor(private client: Client) {}

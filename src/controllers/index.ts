@@ -1,2 +1,2 @@
-export * from './lobbyLinks.controller'
-export * from './votes.controller'
+export * from './lobby-links.controller'
+export * from './voting.controller'

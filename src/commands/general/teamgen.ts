@@ -2,7 +2,6 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
-  TextBasedChannel,
 } from 'discord.js';
 import { ensureChannel } from '../../utils';
 import { config } from '../../config';

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import lobbyLinks from './lobbyLinks.routes';
+import lobbyLinks from './lobby-links.routes';
 
 
 export default function Routes() {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { LobbyLinksController } from '../controllers/lobbyLinks.controller';
+import { LobbyLinksController } from '../controllers/lobby-links.controller';
 
 const router = Router();
 
