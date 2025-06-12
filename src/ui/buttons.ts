@@ -1,6 +1,4 @@
 import {
-  EmbedBuilder,
-  ColorResolvable,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
@@ -11,39 +9,7 @@ import {
 export type ButtonRow = ActionRowBuilder<ButtonBuilder>;
 export type SelectRow = ActionRowBuilder<StringSelectMenuBuilder>;
 
-export function createBaseEmbed(
-  botName = 'MyBot',
-  color: ColorResolvable = '#5865F2'
-): EmbedBuilder {
-  return new EmbedBuilder().setColor(color).setFooter({ text: botName }).setTimestamp();
-}
-
-export function createErrorEmbed(message: string, botName = 'MyBot'): EmbedBuilder {
-  return createBaseEmbed(botName, '#E74C3C')
-    .setTitle('❌ Error')
-    .setDescription(message);
-}
-
-export function createSuccessEmbed(message: string, botName = 'MyBot'): EmbedBuilder {
-  return createBaseEmbed(botName, '#2ECC71')
-    .setTitle('✅ Success')
-    .setDescription(message);
-}
-
-export function createInfoEmbed(
-  title: string,
-  description: string,
-  botName = 'MyBot',
-  color: ColorResolvable = '#3498DB'
-): EmbedBuilder {
-  return createBaseEmbed(botName, color).setTitle(title).setDescription(description);
-}
-
-export function createYesNoRow(
-  prefix: string,
-  includeEmoji = true,
-  disabled = false
-): ButtonRow {
+export function createYesNoRow(prefix: string, includeEmoji = true, disabled = false): ButtonRow {
   const yesLabel = includeEmoji ? '✅ Yes' : 'Yes';
   const noLabel = includeEmoji ? '❌ No' : 'No';
 
@@ -121,12 +87,12 @@ export function createSelectMenu(
     .setDisabled(disabled);
 
   for (const opt of choices) {
-    const menuOption = new StringSelectMenuOptionBuilder()
+    const option = new StringSelectMenuOptionBuilder()
       .setLabel(opt.label)
       .setValue(opt.value);
-    if (opt.description) menuOption.setDescription(opt.description);
-    if (opt.emoji) menuOption.setEmoji(opt.emoji);
-    menu.addOptions(menuOption);
+    if (opt.description) option.setDescription(opt.description);
+    if (opt.emoji) option.setEmoji(opt.emoji);
+    menu.addOptions(option);
   }
 
   return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu);

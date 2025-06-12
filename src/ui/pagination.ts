@@ -5,7 +5,7 @@ import {
   Message,
   EmbedBuilder,
 } from 'discord.js';
-import { createPaginationRow } from './ui-generators';
+import { createPaginationRow } from './buttons';
 
 export interface PaginationManagerOptions {
   prefix: string;
@@ -31,6 +31,7 @@ export class PaginationManager {
   public async send(interaction: ChatInputCommandInteraction) {
     const { prefix, embeds, ephemeral, timeoutMs } = this.opts;
     const row = createPaginationRow(prefix, true, embeds.length <= 1);
+
     this.message = await interaction.reply({
       embeds: [embeds[0]],
       components: [row],
