@@ -1,4 +1,4 @@
-export type GameType = 'civ6' | 'civ7';
+import { GameType } from './common.types';
 
 export interface Civ {
   civ: string;

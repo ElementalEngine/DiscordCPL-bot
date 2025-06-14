@@ -2,6 +2,8 @@ export type UnixSeconds = number;
 
 export type SnowflakeString = string;
 
+export type GameType = 'civ6' | 'civ7';
+
 
 export interface VoteOption {
   emoji: string;

@@ -12,7 +12,7 @@ import { civ7Leaders } from '../data/civ7';
 import { collectParticipants } from '../handlers';
 import { findGuildEmoji } from './emoji.service';
 import { VotingService } from './voting.service';
-import { GameType } from '../types/civ.types';
+import { GameType } from '../types/common.types';
 
 export default class DraftService {
   private voting = new VotingService();
