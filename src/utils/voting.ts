@@ -29,3 +29,55 @@ export function pickVoteWinner(tally: Record<string, number>): string {
   const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
   return sorted[0]?.[0] ?? '';
 }
+
+// Lock helpers for voting operations
+
+const channelLocks = new Set<string>();
+const userLocks = new Set<string>();
+let voteInProgress = false;
+
+let setupQueue: Promise<void> = Promise.resolve();
+
+/** Ensure vote setup steps run sequentially. */
+export async function withVoteSetupLock<T>(fn: () => Promise<T>): Promise<T> {
+  const run = setupQueue.then(fn);
+  setupQueue = run.then(
+    () => {},
+    () => {}
+  );
+  return run;
+}
+
+export function acquireChannelLock(id: string): boolean {
+  if (channelLocks.has(id)) return false;
+  channelLocks.add(id);
+  return true;
+}
+
+export function releaseChannelLock(id: string): void {
+  channelLocks.delete(id);
+}
+
+export function acquireUserLock(id: string): boolean {
+  if (userLocks.has(id)) return false;
+  userLocks.add(id);
+  return true;
+}
+
+export function releaseUserLock(id: string): void {
+  userLocks.delete(id);
+}
+
+export function acquireVoteLock(): boolean {
+  if (voteInProgress) return false;
+  voteInProgress = true;
+  return true;
+}
+
+export function releaseVoteLock(): void {
+  voteInProgress = false;
+}
+
+export function isVoteInProgress(): boolean {
+  return voteInProgress;
+}

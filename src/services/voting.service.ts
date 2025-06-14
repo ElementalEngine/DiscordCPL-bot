@@ -11,6 +11,7 @@ import { VoteSettings, VoteResult } from '../types/common.types';
 
 import { parseVoteOptions, pickVoteWinner } from '../utils/voting';
 import { EMOJI_FINISHED } from '../config/constants';
+import { withVoteSetupLock } from '../utils';
 
 export class VotingService {
 
@@ -20,6 +21,8 @@ export class VotingService {
     rawOptions: [string, string][],
     settings: VoteSettings
   ): Promise<VoteResult> {
+    return withVoteSetupLock(async () => {
+      let message: any;
     const voteOptions = parseVoteOptions(rawOptions);
 
     const optionButtons = voteOptions.map((opt, idx) =>
@@ -48,24 +51,26 @@ export class VotingService {
     );
     rows.push(finishRow);
 
-    const message = await channel.send({
+    message = await channel.send({
       content: `Voting started. Use the buttons below to vote.`,
       components: rows,
     });
 
-    const votes = new Map<string, string>();
-    const finished = new Set<string>();
+    try {
+
+      const votes = new Map<string, string>();
+      const finished = new Set<string>();
 
     const collector = message.createMessageComponentCollector({
       componentType: ComponentType.Button,
       time: settings.timeoutMs ?? 120000,
     });
 
-    collector.on('collect', async i => {
-      if (!members.some(m => m.id === i.user.id)) {
-        await i.reply({ content: 'You are not part of this vote.', ephemeral: true });
-        return;
-      }
+      collector.on('collect', async i => {
+        if (!members.some(m => m.id === i.user.id)) {
+          await i.reply({ content: 'You are not part of this vote.', ephemeral: true });
+          return;
+        }
 
       if (i.customId === 'finish') {
         finished.add(i.user.id);
@@ -80,20 +85,22 @@ export class VotingService {
         votes.set(i.user.id, choice.label);
       }
       await i.deferUpdate();
-    });
+      });
 
-    await new Promise(resolve => collector.once('end', resolve));
+      await new Promise(resolve => collector.once('end', resolve));
 
-    const tally: Record<string, number> = {};
-    for (const opt of voteOptions) tally[opt.label] = 0;
-    for (const vote of votes.values()) {
-      tally[vote] = (tally[vote] ?? 0) + 1;
+      const tally: Record<string, number> = {};
+      for (const opt of voteOptions) tally[opt.label] = 0;
+      for (const vote of votes.values()) {
+        tally[vote] = (tally[vote] ?? 0) + 1;
+      }
+
+      const winner = pickVoteWinner(tally);
+
+      return { winner, tally };
+    } finally {
+      await message.edit({ components: [] }).catch(() => {});
     }
-
-    const winner = pickVoteWinner(tally);
-
-    await message.edit({ components: [] });
-
-    return { winner, tally };
+    });
   }
 }
