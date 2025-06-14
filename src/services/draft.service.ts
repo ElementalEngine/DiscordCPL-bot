@@ -69,7 +69,8 @@ export default class DraftService {
 
       const results: Record<string, string> = {};
 
-      for (const [question, opts] of Object.entries(settings)) {
+      for (const question of Object.keys(settings)) {
+        const opts = settings[question];
         let rawOptions: [string, string][] = [];
 
       if (question === 'Leader Ban' && game === 'civ7') {
@@ -85,14 +86,20 @@ export default class DraftService {
           channel,
           participants,
           rawOptions,
-          { options: opts, timeoutMs: VOTE_TIMER_DRAFT }
+          {
+            options: opts,
+            timeoutMs: VOTE_TIMER_DRAFT,
+            maxVotesPerUser:
+              question === 'Leader Ban' && game === 'civ7' ? 20 : 1,
+            skipTieBreak: question === 'Leader Ban' && game === 'civ7'
+          }
         );
 
         results[question] = result.winner;
       }
 
-      const summary = Object.entries(results)
-        .map(([k, v]) => `**${k}:** ${v}`)
+      const summary = Object.keys(results)
+        .map(k => `**${k}:** ${results[k]}`)
         .join('\n');
 
       await channel.send({ content: `Voting complete:\n${summary}` });

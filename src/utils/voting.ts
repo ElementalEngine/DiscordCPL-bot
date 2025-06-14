@@ -25,9 +25,21 @@ export async function countValidVotes(
   return users.filter(u => validVoterIds.includes(u.id) && !u.bot).size;
 }
 
-export function pickVoteWinner(tally: Record<string, number>): string {
-  const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
-  return sorted[0]?.[0] ?? '';
+export function pickVoteWinner(
+  tally: Record<string, number>,
+  breakTies = true
+): string {
+  const sorted = Object.keys(tally)
+    .map(k => [k, tally[k]] as [string, number])
+    .sort((a, b) => b[1] - a[1]);
+  if (sorted.length === 0) return '';
+  const top = sorted[0][1];
+  const leaders = sorted.filter(([, c]) => c === top).map(([k]) => k);
+  if (breakTies && leaders.length > 1) {
+    const idx = Math.floor(Math.random() * leaders.length);
+    return leaders[idx];
+  }
+  return leaders.join(', ');
 }
 
 // Lock helpers for voting operations
