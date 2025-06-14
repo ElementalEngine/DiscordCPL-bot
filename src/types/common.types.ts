@@ -13,7 +13,10 @@ export interface VoteOption {
 export interface VoteSettings {
   options: VoteOption[];
   timeoutMs?: number;
-  allowMultipleVotes?: boolean;
+  /** Maximum votes allowed per user. Defaults to 1 */
+  maxVotesPerUser?: number;
+  /** Skip tie break and return all winners */
+  skipTieBreak?: boolean;
   secret?: boolean;
 }
 

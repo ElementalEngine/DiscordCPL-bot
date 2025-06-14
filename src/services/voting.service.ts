@@ -58,7 +58,7 @@ export class VotingService {
 
     try {
 
-      const votes = new Map<string, string>();
+      const votes = new Map<string, Set<string>>();
       const finished = new Set<string>();
 
     const collector = message.createMessageComponentCollector({
@@ -82,20 +82,35 @@ export class VotingService {
       const index = Number(i.customId.split('_')[1]);
       const choice = voteOptions[index];
       if (choice) {
-        votes.set(i.user.id, choice.label);
+        const maxVotes = settings.maxVotesPerUser ?? 1;
+        const userVotes = votes.get(i.user.id) ?? new Set<string>();
+        if (userVotes.has(choice.label)) {
+          await i.reply({ content: 'You already voted for this option.', ephemeral: true });
+          return;
+        }
+        if (userVotes.size >= maxVotes) {
+          await i.reply({ content: 'You have no votes remaining for this category.', ephemeral: true });
+          return;
+        }
+        userVotes.add(choice.label);
+        votes.set(i.user.id, userVotes);
+        await i.reply({ content: 'Vote recorded.', ephemeral: true });
+      } else {
+        await i.deferUpdate();
       }
-      await i.deferUpdate();
       });
 
       await new Promise(resolve => collector.once('end', resolve));
 
       const tally: Record<string, number> = {};
       for (const opt of voteOptions) tally[opt.label] = 0;
-      for (const vote of votes.values()) {
-        tally[vote] = (tally[vote] ?? 0) + 1;
+      for (const voteSet of votes.values()) {
+        for (const vote of voteSet) {
+          tally[vote] = (tally[vote] ?? 0) + 1;
+        }
       }
 
-      const winner = pickVoteWinner(tally);
+      const winner = pickVoteWinner(tally, !(settings.skipTieBreak));
 
       return { winner, tally };
     } finally {
