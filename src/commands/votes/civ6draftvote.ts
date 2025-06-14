@@ -3,8 +3,8 @@ import { config } from '../../config';
 import DraftService from '../../services/draft.service';
 
 const builder = new SlashCommandBuilder()
-  .setName('civ7draft')
-  .setDescription('Initiate a Civ7 draft vote')
+  .setName('civ6draft')
+  .setDescription('Initiate a Civ6 draft vote')
   .addStringOption(option =>
     option
       .setName('gamemode')
@@ -18,19 +18,8 @@ const builder = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
-      .setName('startingage')
-      .setDescription('Select starting age')
-      .setRequired(true)
-      .addChoices(
-        { name: 'Antiquity',   value: 'Antiquity_Age'    },
-        { name: 'Exploration', value: 'Exploration_Age'  },
-        { name: 'Modern',      value: 'Modern_Age'       }
-      )
-  )
-  .addStringOption(option =>
-    option
       .setName('Blind Mode')
-      .setDescription('Draft/Vote iva DMs')
+      .setDescription('Draft/Voting iva DMs')
       .setRequired(true)
   );
 
@@ -39,5 +28,5 @@ addMentionOptions(builder as SlashCommandBuilder);
 export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  await new DraftService(interaction.client).startDraft(interaction, 'civ7');
+  await new DraftService(interaction.client).startDraft(interaction, 'civ6');
 }

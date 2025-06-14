@@ -15,26 +15,19 @@ const cors: CorsOptions = {
   exposedHeaders: ['x-auth-token'],
 }
 
-
 const discord = {
   clientId: process.env.BOT_CLIENT_ID ?? '',
   clientSecret: process.env.BOT_CLIENT_SECRET ?? '',
   guildId: process.env.DISCORD_GUILD_ID ?? '',
   token: process.env.BOT_TOKEN ?? '',
   channels: {
-    civ7commands: process.env.CHANNEL_COMMANDS_CIV7!,
-    civ6commands: process.env.CHANNEL_COMMANDS_CIV6!,
-    civ6ffavoting: process.env.CHANNEL_FFA_VOTING_CIV6!,
-    civ6teamvoting: process.env.CHANNEL_TEAM_VOTING_CIV6!,
-    civ7ffavoting: process.env.CHANNEL_FFA_VOTING_CIV7!,
-    civ7teamvoting: process.env.CHANNEL_TEAM_VOTING_CIV7!,
-    civ6lobbylinks: process.env.CHANNEL_LOBBYLINKS_CIV6!,
-    civ7lobbylinks: process.env.CHANNEL_LOBBYLINKS_CIV7!,
+    botTesting: process.env.CHANNEL_BOT_COMMANDS_ID!,
   },
   roles: {
     moderator: process.env.ROLE_MODERATOR!,
-    Civ6Rank: process.env.ROLE_CIV6!,
-    Civ7Rank: process.env.ROLE_CIV7!,
+    develper: process.env.ROLE_DEVELOPER!,
+    civ6Rank: process.env.ROLE_CIV6!,
+    civ7Rank: process.env.ROLE_CIV7!,
   },
 }
 

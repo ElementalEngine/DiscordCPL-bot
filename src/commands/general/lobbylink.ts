@@ -3,7 +3,6 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
 } from 'discord.js';
-import { ensureChannel, ensurePermissions} from '../../utils';
 import { config } from '../../config';
 
 export const data = new SlashCommandBuilder()
@@ -20,14 +19,6 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  if (
-    !ensureChannel(interaction, [
-      config.discord.channels.civ6lobbylinks,
-      config.discord.channels.civ7lobbylinks,
-    ])
-  )
-    return;
-
   const steamlink = interaction.options.getString('steamlink', true);
   if (!steamlink.startsWith('steam://joinlobby/')) {
     await interaction.reply({

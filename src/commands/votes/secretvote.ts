@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import SecretVoteService from '../../services/secret-vote.service';
-import { addMentionOptions, ensureChannel, ensurePermissions } from '../../utils';
 import { config } from '../../config';
 
 const builder = new SlashCommandBuilder()
@@ -30,18 +29,6 @@ addMentionOptions(builder as SlashCommandBuilder);
 export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const allowedChannels = [
-    config.discord.channels.civ7commands,
-    config.discord.channels.civ6commands
-  ];
-
-  if (
-    !ensureChannel(interaction, allowedChannels) ||
-    !ensurePermissions(interaction, [config.discord.roles.Civ7Rank, config.discord.roles.Civ6Rank])
-  ) {
-    return;
-  }
-
   const service = new SecretVoteService(interaction.client);
   await service.secretVote(interaction);
 }
