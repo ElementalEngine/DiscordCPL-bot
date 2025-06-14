@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import SecretVoteService from '../../services/votes/secret-vote.service';
+import SecretVoteService from '../../services/secret-vote.service';
 import { addMentionOptions, ensureChannel, ensurePermissions } from '../../utils';
 import { config } from '../../config';
 
