@@ -1,82 +1,99 @@
 import {
-  ChatInputCommandInteraction,
   GuildMember,
   TextChannel,
-  MessageReaction,
-  Client,
-  Message
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ComponentType
 } from 'discord.js';
 
-import {
-  VoteSettings,
-  VoteOption,
-  ActiveVoteSession,
-  VoteResult
-} from '..//types/common.types';
+import { VoteSettings, VoteResult } from '../types/common.types';
 
-import {
-  parseVoteOptions,
-  getMajorityThreshold,
-  hasMajority,
-  countValidVotes,
-  pickVoteWinner
-} from '../utils/voting';
+import { parseVoteOptions, pickVoteWinner } from '../utils/voting';
+import { EMOJI_FINISHED } from '../config/constants';
 
 export class VotingService {
-  private activeSessions: Map<string, ActiveVoteSession> = new Map();
 
   async startVote(
     channel: TextChannel,
     members: GuildMember[],
     rawOptions: [string, string][],
-    settings: VoteSettings,
-    client: Client
+    settings: VoteSettings
   ): Promise<VoteResult> {
     const voteOptions = parseVoteOptions(rawOptions);
-    const message = await channel.send({
-      content: `Voting started. React to vote!`,
-    });
 
-    for (const option of voteOptions) {
-      await message.react(option.emoji);
+    const optionButtons = voteOptions.map((opt, idx) =>
+      new ButtonBuilder()
+        .setCustomId(`vote_${idx}`)
+        .setEmoji(opt.emoji)
+        .setLabel(opt.label)
+        .setStyle(ButtonStyle.Secondary)
+    );
+
+    const rows: ActionRowBuilder<ButtonBuilder>[] = [];
+    for (let i = 0; i < optionButtons.length; i += 5) {
+      rows.push(
+        new ActionRowBuilder<ButtonBuilder>().addComponents(
+          ...optionButtons.slice(i, i + 5)
+        )
+      );
     }
 
-    const session: ActiveVoteSession = {
-      messageId: message.id,
-      options: voteOptions,
-      voters: members.map(m => m.id),
-      startedAt: Date.now(),
-      endsAt: Date.now() + (settings.timeoutMs ?? 120000),
-      isSecret: settings.secret ?? false
-    };
+    const finishRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId('finish')
+        .setEmoji(EMOJI_FINISHED)
+        .setLabel('Finish')
+        .setStyle(ButtonStyle.Success)
+    );
+    rows.push(finishRow);
 
-    this.activeSessions.set(message.id, session);
+    const message = await channel.send({
+      content: `Voting started. Use the buttons below to vote.`,
+      components: rows,
+    });
 
-    await this.waitForVotes(client, message, session);
+    const votes = new Map<string, string>();
+    const finished = new Set<string>();
 
-    const tally = await this.tallyVotes(message, session);
+    const collector = message.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: settings.timeoutMs ?? 120000,
+    });
+
+    collector.on('collect', async i => {
+      if (!members.some(m => m.id === i.user.id)) {
+        await i.reply({ content: 'You are not part of this vote.', ephemeral: true });
+        return;
+      }
+
+      if (i.customId === 'finish') {
+        finished.add(i.user.id);
+        await i.reply({ content: 'Vote recorded.', ephemeral: true });
+        if (finished.size === members.length) collector.stop('finished');
+        return;
+      }
+
+      const index = Number(i.customId.split('_')[1]);
+      const choice = voteOptions[index];
+      if (choice) {
+        votes.set(i.user.id, choice.label);
+      }
+      await i.deferUpdate();
+    });
+
+    await new Promise(resolve => collector.once('end', resolve));
+
+    const tally: Record<string, number> = {};
+    for (const opt of voteOptions) tally[opt.label] = 0;
+    for (const vote of votes.values()) {
+      tally[vote] = (tally[vote] ?? 0) + 1;
+    }
+
     const winner = pickVoteWinner(tally);
 
+    await message.edit({ components: [] });
+
     return { winner, tally };
-  }
-
-  private async waitForVotes(client: Client, message: Message, session: ActiveVoteSession): Promise<void> {
-    return new Promise(resolve => {
-      const timeout = session.endsAt - Date.now();
-      setTimeout(() => resolve(), timeout);
-    });
-  }
-
-  private async tallyVotes(message: Message, session: ActiveVoteSession): Promise<Record<string, number>> {
-    const tally: Record<string, number> = {};
-
-    for (const option of session.options) {
-      const reaction = message.reactions.resolve(option.emoji);
-      if (!reaction) continue;
-      const count = await countValidVotes(reaction, session.voters);
-      tally[option.label] = count;
-    }
-
-    return tally;
   }
 }
