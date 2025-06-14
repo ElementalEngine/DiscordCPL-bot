@@ -1,9 +1,15 @@
-import { PlayerStats2Model, IPlayerStats2 } from './models/playerStats2.model';
-import { SeasonStatsModel, ISeasonStats } from './models/seasonStats.model';
-import { PBCStatsModel, IPBCStats } from './models/pbcStats.model';
-import { Edition } from './models/edition.model';
-import { GameType } from './models/gameType.model';
-import { WaitingMatchModel, ValidatedMatchModel, IMatch } from './models/match.model';
+import { PlayerStats2Model } from './models/playerStats2.model';
+import { SeasonStatsModel } from './models/seasonStats.model';
+import { PBCStatsModel } from './models/pbcStats.model';
+import { WaitingMatchModel, ValidatedMatchModel } from './models/match.model';
+import {
+  Edition,
+  GameType,
+  IPlayerStats2,
+  ISeasonStats,
+  IPBCStats,
+  IMatch,
+} from './types';
 
 // Seasonal Stats queries
 export async function getAllSeasonStats(edition: Edition, gameType: GameType, minGames = 3): Promise<ISeasonStats[]> {

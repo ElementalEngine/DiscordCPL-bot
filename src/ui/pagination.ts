@@ -6,13 +6,8 @@ import {
   EmbedBuilder,
 } from 'discord.js';
 import { createPaginationRow } from './buttons';
+import { PaginationManagerOptions } from '../types/ui.types';
 
-export interface PaginationManagerOptions {
-  prefix: string;
-  embeds: EmbedBuilder[];
-  ephemeral?: boolean;
-  timeoutMs?: number;
-}
 
 export class PaginationManager {
   private currentPage = 0;

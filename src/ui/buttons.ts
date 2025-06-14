@@ -5,9 +5,8 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
 } from 'discord.js';
+import { ButtonRow, SelectRow } from '../types/ui.types';
 
-export type ButtonRow = ActionRowBuilder<ButtonBuilder>;
-export type SelectRow = ActionRowBuilder<StringSelectMenuBuilder>;
 
 export function createYesNoRow(prefix: string, includeEmoji = true, disabled = false): ButtonRow {
   const yesLabel = includeEmoji ? '✅ Yes' : 'Yes';
