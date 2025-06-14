@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import SecretVoteService from '../services/secret-vote.service';
-// import Civ7DraftService from '../services/voting.service';
+import DraftService from '../services/draft.service';
 
 export class VotesController {
   static async startSecretVote(interaction: ChatInputCommandInteraction) {
@@ -9,7 +9,7 @@ export class VotesController {
   }
 
   static async startCiv7Draft(interaction: ChatInputCommandInteraction) {
-    // const service = new Civ7DraftService(interaction.client);
-    // return service.civ7Draft(interaction);  
+    const service = new DraftService(interaction.client);
+    return service.startDraft(interaction, 'civ7');
   }
 }

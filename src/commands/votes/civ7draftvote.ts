@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { config } from '../../config';
 import { addMentionOptions, ensureChannel, ensurePermissions } from '../../utils';
-// import Civ7DraftService from '../../services/voting.service';
+import DraftService from '../../services/draft.service';
 
 const builder = new SlashCommandBuilder()
   .setName('civ7draft')
@@ -45,5 +45,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     return;
   }
 
-  // await new Civ7DraftService(interaction.client).civ7Draft(interaction);
+  await new DraftService(interaction.client).startDraft(interaction, 'civ7');
 }

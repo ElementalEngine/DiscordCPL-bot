@@ -178,5 +178,6 @@ export const CIV7_VOTE_SETTINGS: Record<string, VoteSettingOption[]> = {
 };
 
 export const CIV7_DEFAULT_VOTE_SETTINGS: Record<string, string> = {
-
+  "Trade": "Not Allowed",
+  "Victory Points": "Battle Points Only",
 };
