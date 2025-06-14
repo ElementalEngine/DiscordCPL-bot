@@ -3,7 +3,7 @@
 ![Github-Banner](assets/images/CPL_Bot_Github_banner2.png)
 Bot for Civilization Players League «CPL». Developed on Node.js/TypeScript.
 
-MySQL, Express, Discord API, Steam Web-API, Epic Web-APi, TrueSkill
+MongoDB, Express, Discord API, Steam Web-API, Epic Web-API, TrueSkill
 
 # Features
 
