@@ -93,3 +93,7 @@ export function releaseVoteLock(): void {
 export function isVoteInProgress(): boolean {
   return voteInProgress;
 }
+
+export function generateVoteId(): string {
+  return Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
+}
