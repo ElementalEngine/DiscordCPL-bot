@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { config } from '../../config';
 import DraftService from '../../services/draft.service';
+import { addMentionOptions } from '../../utils';
 
 const builder = new SlashCommandBuilder()
   .setName('civ6draft')
