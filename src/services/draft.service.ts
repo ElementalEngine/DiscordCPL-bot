@@ -27,6 +27,10 @@ export default class DraftService {
     interaction: ChatInputCommandInteraction,
     game: GameType
   ): Promise<void> {
+    const blind = interaction.options.getBoolean('blind_mode') ?? false;
+    if (blind) {
+      this.voting.enableBlindMode();
+    }
     if (!acquireVoteLock()) {
       await interaction.reply({
         content: `<@${interaction.user.id}> is already part of an ongoing vote – vote aborted.`,
@@ -106,6 +110,7 @@ export default class DraftService {
     } finally {
       lockedIds.forEach(releaseUserLock);
       releaseVoteLock();
+      this.voting.disableBlindMode();
     }
   }
 }
