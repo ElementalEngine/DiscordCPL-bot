@@ -28,11 +28,11 @@ const builder = new SlashCommandBuilder()
         { name: 'Modern',      value: 'Modern_Age'       }
       )
   )
-  .addStringOption(option =>
+  .addBooleanOption(option =>
     option
-      .setName('Blind Mode')
-      .setDescription('Draft/Vote iva DMs')
-      .setRequired(true)
+      .setName('blind_mode')
+      .setDescription('Enable blind mode to vote via DMs')
+      .setRequired(false)
   );
 
 addMentionOptions(builder as SlashCommandBuilder);
@@ -40,5 +40,5 @@ addMentionOptions(builder as SlashCommandBuilder);
 export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  await new DraftService(interaction.client).startDraft(interaction, 'civ7');
+  await new DraftService().startDraft(interaction, 'civ7');
 }

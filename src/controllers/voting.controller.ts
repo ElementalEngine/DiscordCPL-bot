@@ -9,7 +9,7 @@ export class VotesController {
   }
 
   static async startCiv7Draft(interaction: ChatInputCommandInteraction) {
-    const service = new DraftService(interaction.client);
+    const service = new DraftService();
     return service.startDraft(interaction, 'civ7');
   }
 }

@@ -17,11 +17,11 @@ const builder = new SlashCommandBuilder()
         { name: 'duel',  value: 'duel'  }
       )
   )
-  .addStringOption(option =>
+  .addBooleanOption(option =>
     option
-      .setName('Blind Mode')
-      .setDescription('Draft/Voting iva DMs')
-      .setRequired(true)
+      .setName('blind_mode')
+      .setDescription('Enable blind mode to vote via DMs')
+      .setRequired(false)
   );
 
 addMentionOptions(builder as SlashCommandBuilder);
@@ -29,5 +29,5 @@ addMentionOptions(builder as SlashCommandBuilder);
 export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  await new DraftService(interaction.client).startDraft(interaction, 'civ6');
+  await new DraftService().startDraft(interaction, 'civ6');
 }
