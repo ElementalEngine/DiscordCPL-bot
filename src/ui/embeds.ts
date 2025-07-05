@@ -1,31 +1,29 @@
-// ui/embeds.ts
+// src/ui/embeds.ts
 
-import { EmbedBuilder, ColorResolvable } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { VoteSettingOption } from '../types/service';
 
-export function createBaseEmbed(
-  botName = 'MyBot',
-  color: ColorResolvable = '#5865F2'
-): EmbedBuilder {
-  return new EmbedBuilder().setColor(color).setFooter({ text: botName }).setTimestamp();
-}
-
-export function createErrorEmbed(message: string, botName = 'MyBot'): EmbedBuilder {
-  return createBaseEmbed(botName, '#E74C3C')
-    .setTitle('❌ Error')
-    .setDescription(message);
-}
-
-export function createSuccessEmbed(message: string, botName = 'MyBot'): EmbedBuilder {
-  return createBaseEmbed(botName, '#2ECC71')
-    .setTitle('✅ Success')
-    .setDescription(message);
-}
-
-export function createInfoEmbed(
+/**
+ * Build a settings-vote embed.
+ *
+ * @param title     The embed title
+ * @param settings  Map of category → available option emojis/labels
+ * @param defaults  Optional default choice per category
+ */
+export function buildSettingsVoteEmbed(
   title: string,
-  description: string,
-  botName = 'CPL Bot',
-  color: ColorResolvable = '#3498DB'
+  settings: Record<string, VoteSettingOption[]>,
+  defaults: Record<string, string> = {}
 ): EmbedBuilder {
-  return createBaseEmbed(botName, color).setTitle(title).setDescription(description);
+  const embed = new EmbedBuilder()
+    .setTitle(title)
+    .setDescription('Click the buttons below to vote on each category.');
+
+  for (const [category, opts] of Object.entries(settings)) {
+    const line = opts.map(o => `${o.emoji} ${o.label}`).join('  ');
+    const def  = defaults[category] ? ` (default: ${defaults[category]})` : '';
+    embed.addFields({ name: category, value: `${line}${def}`, inline: false });
+  }
+
+  return embed;
 }

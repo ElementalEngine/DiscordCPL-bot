@@ -50,3 +50,4 @@ export const config = {
   trueskill,
   mongoDb: process.env.MONGODB_URI!,
 }
+

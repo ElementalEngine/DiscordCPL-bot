@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import SecretVoteService from '../../services/secret-vote.service';
+// import { SecretVoteService } from '../../services/secret.vote';
 import { config } from '../../config';
+import { addMentionOptions } from '../../utils';
 
 const builder = new SlashCommandBuilder()
   .setName('secretvote')
@@ -29,6 +30,6 @@ addMentionOptions(builder as SlashCommandBuilder);
 export const data = builder as SlashCommandBuilder;
 
 export async function execute(interaction: ChatInputCommandInteraction) {
-  const service = new SecretVoteService(interaction.client);
-  await service.secretVote(interaction);
+// const service = new SecretVoteService(interaction.client);
+// await service.secretVote(interaction);
 }

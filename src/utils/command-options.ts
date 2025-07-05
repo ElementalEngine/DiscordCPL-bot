@@ -1,7 +1,12 @@
-import { SlashCommandBuilder, SlashCommandUserOption } from 'discord.js';
+import {
+  SlashCommandOptionsOnlyBuilder,
+  SlashCommandUserOption
+} from 'discord.js';
 import { MAX_MENTIONS } from '../config/constants';
 
-export function addMentionOptions<T extends SlashCommandBuilder>(
+export function addMentionOptions<
+  T extends SlashCommandOptionsOnlyBuilder
+>(
   builder: T,
   { prefix = 'user', count = MAX_MENTIONS }: { prefix?: string; count?: number } = {}
 ): T {
